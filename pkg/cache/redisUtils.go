@@ -1,4 +1,4 @@
-package utils
+package redisUtils
 
 import (
 	"encoding/json"
