@@ -21,7 +21,7 @@ func Login(c *gin.Context) {
 		response.ErrorMsg(err.Error(), "")
 		return
 	}
-	response.SuccessMsg(token, "")
+	response.SuccessMsg(token, token1)
 
 }
 

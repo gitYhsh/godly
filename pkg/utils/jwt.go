@@ -2,6 +2,7 @@ package pkgutils
 
 import (
 	"errors"
+	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -24,7 +25,7 @@ var (
 	TokenNotValidYet error  = errors.New("Token not active yet")
 	TokenMalformed   error  = errors.New("That's not even a token")
 	TokenInvalid     error  = errors.New("Couldn't handle this token:")
-	SignKey          string = "xinlc_id"
+	SignKey          string = "xlc"
 )
 
 func NewJWT() *JWT {
@@ -35,9 +36,9 @@ func NewJWT() *JWT {
 
 func Clmin() jwt.StandardClaims {
 	return jwt.StandardClaims{
-		NotBefore: int64(time.Now().Unix() - 1000), // 签名生效时间
-		ExpiresAt: int64(time.Now().Unix() + 7200), // 过期时间 两个小时
-		Issuer:    "xinlc_id",                      //签名的发行者
+		NotBefore: int64(time.Now().Unix()),     // 签名生效时间
+		ExpiresAt: int64(time.Now().Unix() + 1), // 过期时间 两个小时
+		Issuer:    SignKey,                      //签名的发行者
 	}
 }
 
@@ -73,17 +74,17 @@ func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {
 
 // 更新token
 func (j *JWT) RefreshToken(tokenString string) (string, error) {
-	jwt.TimeFunc = func() time.Time {
-		return time.Unix(0, 0)
-	}
+	// jwt.TimeFunc = func() time.Time {
+	// 	return time.Unix(0, 0)
+	// }
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return j.SigningKey, nil
 	})
-
 	if err != nil {
 		return "", err
 	}
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
+
 		jwt.TimeFunc = time.Now
 		claims.StandardClaims.ExpiresAt = time.Now().Add(2 * time.Hour).Unix()
 		return j.CreateToken(*claims)
