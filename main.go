@@ -10,5 +10,5 @@ func main() {
 	config.Init()
 	routersInit := routers.InitRouter()
 
-	routersInit.Run()
+	routersInit.Run(":8089")
 }
