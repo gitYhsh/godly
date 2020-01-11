@@ -22,13 +22,15 @@ func (g *Gin) SuccessMsg(errMsg string, data interface{}) {
 		Msg:  errMsg,
 		Data: data,
 	})
+	g.C.Abort()
 	return
 }
 func (g *Gin) ErrorMsg(errMsg string, data interface{}) {
-	g.C.JSON(http.StatusBadGateway, Response{
+	g.C.JSON(http.StatusOK, Response{
 		Code: 500,
 		Msg:  errMsg,
 		Data: data,
 	})
+	g.C.Abort()
 	return
 }

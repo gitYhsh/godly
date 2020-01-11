@@ -1,8 +1,9 @@
 package tokentest
 
 import (
+	"godly/model/user"
+	"godly/pkg/logger"
 	"godly/pkg/response"
-	"godly/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,34 +14,29 @@ type LoginDemo struct {
 }
 
 func Login(c *gin.Context) {
-	response := response.Gin{C: c}
+	res := response.Gin{C: c}
 	var json LoginDemo
 	if err := c.ShouldBind(&json); err != nil {
-		response.ErrorMsg("", err)
+		res.ErrorMsg("", err.Error())
 		return
 	}
 
-	j := pkgutils.NewJWT()
-	claims := pkgutils.CustomClaims{
-		"11111", "杨洪升",
-		pkgutils.Clmin(),
-	}
-
-	token, err := j.CreateToken(claims)
-
-	if err != nil {
-		response.ErrorMsg(err.Error(), "")
+	users := user.User{Username: json.User}
+	token, errse := users.GetUserInfo()
+	if errse != nil {
+		res.ErrorMsg("", errse.Error())
+		logger.LoggerInfo(errse.Error())
 		return
 	}
-	response.SuccessMsg(token, token1)
+	res.SuccessMsg(token, users)
 
 }
 
 func Auton(c *gin.Context) {
 	response := response.Gin{C: c}
-	claims := c.MustGet("claims").(*pkgutils.CustomClaims)
-	if claims != nil {
-		response.SuccessMsg("", claims)
-	}
+	// claims := c.MustGet("claims").(*pkgutils.CustomClaims)
+	// if claims != nil {
+	response.SuccessMsg("", "")
+	//}
 
 }

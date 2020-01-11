@@ -2,7 +2,6 @@ package pkgutils
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
